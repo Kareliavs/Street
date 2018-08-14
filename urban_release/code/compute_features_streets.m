@@ -15,11 +15,14 @@ if strcmp(config.feature_type, 'decaf')
     end
    %urban = decaf_features.urban;
 elseif strcmp(config.feature_type, 'gist')
+    disp("S");
     if ~exist(config.gist_features_path, 'file')
         data.images = cellfun(@(x){sprintf('%s/%s', config.image_path, x)}, ...
                               urban.data.image_names);
         feature_matrix = double(VisionImage.ComputeGistFeatures(data));
+        disp(length(feature_matrix));
         image_list = data.images;
+        disp(image_list);
         save(config.gist_features_path, 'feature_matrix', 'image_list', 'urban', '-v7.3');
     else
         load(config.gist_features_path);

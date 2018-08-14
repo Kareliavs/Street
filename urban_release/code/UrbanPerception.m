@@ -171,7 +171,9 @@ classdef UrbanPerception
                 urban.ids = regexp(str, '"ID": "[^"]*"', 'match');
                 urban.ids = cellfun(@(x){x(length('"ID": "') + 1: end - 1)}, urban.ids);
                 
-                urban.image_names = cellfun(@(x){sprintf('id_%s_640_420.jpg', x)}, urban.ids);
+                urban.image_names = regexp(str, '"File_Location": "[^"]*"', 'match');
+                urban.image_names = cellfun(@(x){x(length('"File_location": "') + 18: end - 1)}, urban.image_names);
+                %urban.image_names = cellfun(@(x){sprintf('id_%s_640_420.jpg', x)}, urban.ids);
             else
                 % This is a csv file.
                 f = fopen(data_file);
@@ -198,6 +200,20 @@ classdef UrbanPerception
             for t = 1 : length(cities)
                 good_inds = good_inds + strcmp(urban.cities, cities{t});
             end
+            data.qs_safer = data.qs_safer();
+            data.qs_safer_error = data.qs_safer_error();
+            data.qs_unique = data.qs_unique();
+            data.qs_unique_error = data.qs_unique_error();
+            data.qs_upperclass = data.qs_upperclass();
+            data.qs_upperclass_error = data.qs_upperclass_error();
+            data.latitudes = data.latitudes();
+            data.longitudes = data.longitudes();
+            data.pitches = data.pitches();
+            data.headings = data.headings();
+            data.cities = data.cities();
+            data.ids = data.ids();
+            data.image_names = data.image_names();
+            %{
             bad_inds = ~(good_inds > 0);
 
             invalids = isnan(data.qs_safer) | isnan(data.qs_unique) | isnan(data.qs_upperclass) | bad_inds;
@@ -214,6 +230,7 @@ classdef UrbanPerception
             data.cities = data.cities(~invalids);
             data.ids = data.ids(~invalids);
             data.image_names = data.image_names(~invalids);
+            %}
         end
     end
 end
