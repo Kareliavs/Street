@@ -266,14 +266,14 @@ classdef VisionImage < BaseImage
                 fprintf('\n%d. Computing features for image %d of %d\n', i, i, length(image_list)); 
                 features{i} = obj.sift_feature_encoding(encoding, codebook, pyramid, []); 
             end
-            features = cat(2, features{:});
+            features = cat(4, features{:});
             
             if isfield(data, 'train_images')
                 feature_set.train_features = features(:, train_ids)';
                 feature_set.val_features = features(:, val_ids)';
                 feature_set.test_features = features(:, test_ids)';
             else
-                feature_set = features';
+                feature_set = features.';
             end
         end 
 	

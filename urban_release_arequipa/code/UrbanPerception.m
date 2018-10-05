@@ -27,27 +27,30 @@ classdef UrbanPerception
         end
 
         function labeled_data = getBinaryData(obj, city_str, metric_str, delta)
-            disp(city_str);
             data = obj.getData(city_str);
-            disp(data);
             [sorted_scores, sorted_inds] = sort(data.(['qs_' metric_str]), 'descend');
             cut_point = floor(length(data.ids) * delta);    
-            disp("cut point");
-            disp(cut_point);
-                        disp("sorted scores");
-            disp(sorted_scores);
-                        disp("sorted inds");
-            disp(sorted_inds);
-                        disp("end");
             pos_images = data.image_names(sorted_inds(1:cut_point));
-            disp(pos_images);
-            disp("hola2222");
-            neg_images = data.image_names(sorted_inds(end - cut_point + mod(end, 3): end));
+            %neg_images = data.image_names(sorted_inds(end - cut_point + mod(end, 3): end));
+            numeroyo =int16(length(sorted_inds) - cut_point + mod(length(sorted_inds),3));
+            %disp(numeroyo);
+            neg_images = data.image_names(sorted_inds(numeroyo: end));
             
             labeled_data.images = [pos_images, neg_images]';
             labeled_data.labels = [ones(1, length(pos_images)), -ones(1, length(neg_images))]';
         end
 
+        function labeled_data = getBinaryData2(obj, city_str, metric_str, delta)
+            data = obj.getData2(city_str);
+            [sorted_scores, sorted_inds] = sort(data.(['qs_' metric_str]), 'descend');
+            cut_point = floor(length(data.ids) * delta);    
+            pos_images = data.image_names(sorted_inds(1:cut_point));
+            numeroyo =int16(length(sorted_inds) - cut_point + mod(length(sorted_inds),3));
+            neg_images = data.image_names(sorted_inds(numeroyo: end));
+            
+            labeled_data.images = [pos_images, neg_images]';
+            labeled_data.labels = [ones(1, length(pos_images)), -ones(1, length(neg_images))]';
+        end
         function labeled_data = getLabeledData(obj, city_str, metric_str, scale_type)
             data = obj.getData(city_str);
             labeled_data.images = data.image_names;
@@ -64,7 +67,6 @@ classdef UrbanPerception
 
         function data = getData(obj, city_str)
             inds = strcmp(obj.data.cities, city_str);%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-            disp(inds);
             data.qs_safer = obj.data.qs_safer(inds);
             data.qs_safer_error = obj.data.qs_safer_error(inds);
             data.qs_unique = obj.data.qs_unique(inds);
@@ -78,7 +80,10 @@ classdef UrbanPerception
             %data.latitudes = obj.data.latitudes(inds);
             data.image_names = obj.data.image_names(inds);
         end
-        
+         function data = getData2(obj, city_str)
+            inds = strcmp(obj.data.cities, city_str);%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+            data = obj.data;
+        end
         function plotData(obj, city_str, metric_str, output_str, image_url)
             city_id = regexprep(lower(city_str), ' ', '_');
             output_str = [output_str '/' metric_str];
@@ -183,15 +188,18 @@ classdef UrbanPerception
                 urban.ids = cellfun(@(x){x(length('"ID": "') + 1: end - 1)}, urban.ids);
                 
                 urban.image_names = regexp(str, '"File_Location": "[^"]*"', 'match');
-                disp(urban.image_names);
-                if strcmp(urban.ids,'')
+                urban.image_names = cellfun(@(x){x(length('"File_location": "') + 18: end - 1)}, urban.image_names);
+                %disp("esto: "+urban.image_names);
+                %{
+               if strcmp(urban.ids,'')
                     disp("es Arequipa");
                    urban.image_names = cellfun(@(x){x(length('"File_location": "') + 18: end - 1)}, urban.image_names);
                 else
                     disp("No Arequipa");
                     urban.image_names = cellfun(@(x){sprintf('id_%s_640_420.jpg', x)}, urban.ids);
                 end
-                disp(urban.cities);
+              %}
+                %urban.image_names = cellfun(@(x){x(length('"File_location": "') + 18: end - 1)}, urban.image_names);
             else
                 % This is a csv file.
                 f = fopen(data_file);

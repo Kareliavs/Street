@@ -36,22 +36,23 @@ config.urban_data_file_type = 'json';
 
 % Configure feature type.
 %config.feature_type = 'decaf';
-config.feature_type = 'fisher';
-%config.feature_type = 'gist';
+%config.feature_type = 'fisher';
+config.feature_type = 'gist';
 
 % Gist features configuration.
-%config.gist_features_path = [config.homedir '/output/' config.datasource '/gist_features.mat'];
+config.gist_features_path = [config.homedir '/output/' config.datasource '/gist_features.mat'];
 
 % Decaf features configuration.
 %config.decaf_layer = 'fc6_cudanet_out';
 %config.decaf_features_path = [config.homedir '/output/' config.datasource '/decaf_features_' config.decaf_layer '.mat'];
 
 % Sift features with Fisher Vectors settings.
+%{
 config.kCodebookSizeGmm = 128;%Diccionario visual con 128 componentes usando Gaussian Mixture Models. 
 config.gmm_dictionary_path = [config.homedir '/output/' config.datasource '/gmm_dictionary.mat'];
 config.pyramid = {[1 1], [2 2]};
 config.fisher_features_path = [config.homedir '/output/' config.datasource '/fisher_features.mat'];
-
+%}
 % Configure Learning parameters for Linear SVMs.
 config.splits_path = [config.homedir '/output/split_info/binary'];
 ensuredir(config.splits_path);
@@ -69,22 +70,24 @@ cities = UrbanPerception.ListCities();
 
 % Load data from the Place Pulse dataset.
 urban = UrbanPerception(config.urban_data_file, config.urban_data_file_type);
+
 if strcmp(config.datasource, 'placepulse_2013')
     % Fix image_names
     for i = 1 : length(urban.data.image_names)
         toks = regexp(urban.data.image_names{i}, '_', 'split');
         urban.data.image_names{i} = sprintf('%s_%s_640_420.jpg', toks{1}, toks{2});
+        fprintf('CAMBIANDO:  %s_%s_640_420.jpg', toks{1}, toks{2});
     end
 end
 
 % Plot data for the two cities.
-for city_id = 1 : length(cities)
-    city = cities{city_id};
-    fprintf('%d. Plotting data for city: %s\n', city_id, city);
-    urban.plotData(city, 'safer', [config.output_path '/view_data'], config.image_url); %/mnt/raid/data/vicente/urban_release/output/placepulse_2011/view_data
-    urban.plotData(city, 'unique', [config.output_path '/view_data'], config.image_url);
-    urban.plotData(city, 'upperclass', [config.output_path '/view_data'], config.image_url);
-end
+%for city_id = 1 : length(cities)
+ %   city = cities{city_id};
+ %   fprintf('%d. Plotting data for city: %s\n', city_id, city);
+ %   urban.plotData(city, 'safer', [config.output_path '/view_data'], config.image_url); %/mnt/raid/data/vicente/urban_release/output/placepulse_2011/view_data
+  %  urban.plotData(city, 'unique', [config.output_path '/view_data'], config.image_url);
+   % urban.plotData(city, 'upperclass', [config.output_path '/view_data'], config.image_url);
+%end
 
 disp("HOLA");
 % Compute or load features.
@@ -109,8 +112,8 @@ metric_str = metric_set{1}; % si le toca seguridad, singularidad o clase
 disp(cities);
 %for city_ind = 1 : length(cities) % para todas las ciudades
     city_string = cities{1};
-    city_string_harder = cities_harder{city_ind};
-    %city_string_harder = 'Arequipa';
+    %city_string_harder = cities_harder{city_ind};
+    city_string_harder = 'Arequipa';
     city_identifier = regexprep(lower(city_string), ' ', '_');
     ensuredir(sprintf('%s/%s_%s/%s', config.results_path, ...
                       config.experiment_id, city_identifier, metric_str));
@@ -161,11 +164,11 @@ disp(cities);
 
             % Now run testing and present results in a webpage.
             test = Learning.TestLinearSvm(data, features_set, model); % testear lo aprendido (data, vector de caracteristicas, modelo)
-            delta_aucs(delta_ind, split_id) = test.area_under_curve;  % auc de cada uno 
+            %delta_aucs(delta_ind, split_id) = test.area_under_curve;  % auc de cada uno 
 
             % Now run testing and present results in a webpage.
             test_harder = Learning.TestLinearSvm(data_harder, features_set_harder, model);  % testear lo aprendido con otros
-            delta_aucs_harder(delta_ind, split_id) = test_harder.area_under_curve;
+            %delta_aucs_harder(delta_ind, split_id) = test_harder.area_under_curve;
 
             % Plot output results.
             figure_path = sprintf('%s/%s_%s/%s/delta_%d/%d_pr.jpg', ...
@@ -180,10 +183,10 @@ disp(cities);
             fprintf(f, '<html><body><h3>[%s, %s, %s]</h3>\n', config.experiment_id, ...
                        city_identifier, metric_str);
             fprintf(f, '<b>[delta = %.2f, split = %d]</b><br/>\n', delta, split_id);
-            fprintf(f, '<b>[<span style="color:blue"/>AUC_1</span> = %.2f,', ...
-                       test.area_under_curve);%etrenado y probado uno mismo
-            fprintf(f, '<span style="color:red">AUC_2</span> = %.2f]</b><br/>', ...
-                       test_harder.area_under_curve); %entrenado en uno, probado en otro 
+           % fprintf(f, '<b>[<span style="color:blue"/>AUC_1</span> = %.2f,', ...
+           %            test.area_under_curve);%etrenado y probado uno mismo
+           % fprintf(f, '<span style="color:red">AUC_2</span> = %.2f]</b><br/>', ...
+            %           test_harder.area_under_curve); %entrenado en uno, probado en otro 
             fprintf(f, '<b>[#(train) = %d, #(test) = %d, #(total) = %d]</b><br/>', ...
                     length(data.train_images) + length(data.val_images), ...
                     length(data.test_images), sum(strcmp(urban.data.cities, city_string)));

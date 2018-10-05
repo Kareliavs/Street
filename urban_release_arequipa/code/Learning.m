@@ -196,12 +196,13 @@ classdef Learning
             sorted_test_labels = data.test_labels(sinds);
             precisions = cumsum(sorted_test_labels > 0)' ./ [1:length(data.test_labels)];
             recalls = cumsum(sorted_test_labels > 0)' / sum(data.test_labels == 1);
+            %{
             area_under_curve = trapz(recalls, precisions); 
             fprintf('Test-Results: acc = %2.2f, AUC = %2.2f, took = %f\n', ...
                     accuracy, 100 * area_under_curve, toc);
-
+            %}
             test.accuracy = accuracy;
-            test.area_under_curve = area_under_curve;
+            %test.area_under_curve = area_under_curve;
             test.precisions = precisions;
             test.recalls = recalls;
             test.predicted_labels = predicted_labels;
@@ -387,13 +388,15 @@ classdef Learning
                 sorted_val_labels = data.val_labels(sinds);
                 precisions = cumsum(sorted_val_labels > 0)' ./ [1:length(data.val_labels)];
                 disp(data.train_labels);
-                recalls = cumsum(sorted_val_labels > 0)' / sum(data.val_labels == 1);
+                recalls = cumsum(sorted_val_labels > 0).' / sum(data.val_labels == 1);
+                %{
                 disp("recalls");
                 disp(recalls);
                 area_under_curve = trapz(recalls, precisions); 
                 metrics(i) = area_under_curve;
                 fprintf('%d. c = %.5f, acc = %2.2f, AUC = %2.2f, took = %f\n', ...
                         i, c, accuracy, 100 * area_under_curve, toc);
+                %}
             end
 
             fprintf('Training final SVM model\n'); tic;
@@ -431,12 +434,13 @@ classdef Learning
             sorted_test_labels = data.test_labels(sinds);
             precisions = cumsum(sorted_test_labels > 0)' ./ [1:length(data.test_labels)];
             recalls = cumsum(sorted_test_labels > 0)' / sum(data.test_labels == 1);
+            %{
             area_under_curve = trapz(recalls, precisions); 
             fprintf('Test-Results: acc = %2.2f, AUC = %2.2f, took = %f\n', ...
                     accuracy, 100 * area_under_curve, toc);
-
+            %}
             test.accuracy = accuracy;
-            test.area_under_curve = area_under_curve;
+            %test.area_under_curve = area_under_curve;
             test.precisions = precisions;
             test.recalls = recalls;
             test.predicted_labels = predicted_labels;
@@ -475,12 +479,14 @@ classdef Learning
                 sorted_val_labels = data.val_labels(sinds);
                 precisions = cumsum(sorted_val_labels > 0)' ./ [1:length(data.val_labels)];
                 recalls = cumsum(sorted_val_labels > 0)' / sum(data.val_labels == 1);
+                %{
                 area_under_curve = trapz(recalls, precisions); 
                 metrics(i, j) = area_under_curve;
                 informative(i, j) = length(unique(predicted_labels)) > 1;
                 count = i * length(g_param_space) + j;
                 fprintf('%d. c = %.5f, g = %.5f, acc = %2.2f, AUC = %2.2f, took = %f\n', ...
                         count, c, g, accuracy, 100 * area_under_curve, toc);
+                %}
             end
             end
 
