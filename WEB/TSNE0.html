@@ -342,8 +342,7 @@
                        .style("stroke-width",20 );
 
         var pathsE = groupsE.append("svg:image")
-        .attr("xlink:href",  function(d) { return d.File_Location;})
-        .attr("x", function(d) { return 40;})
+.attr("xlink:href",  function(d) { return "https://kareliavs.github.io/Street/WEB/".concat(d.File_Location);})///HERE CHANGE        .attr("x", function(d) { return 40;})
         .attr("y", function(d) { return -40;})
         .attr("height", 300)
         .attr("width", 300)
