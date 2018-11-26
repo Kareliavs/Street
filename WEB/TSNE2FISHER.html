@@ -96,7 +96,7 @@
                           <span>Ciudades</span>
                       </a>
                       <ul class="sub">
-                        <li class="sub-menu">
+                            <li class="sub-menu">
                                 <a href="javascript:;" >
                                     <i class="fa fa-th"></i>
                                     <span>Arequipa</span>
@@ -122,10 +122,11 @@
                                     <span>New York City</span>
                                 </a>
                                 <ul class="sub">
-                                    <li class="active"><a  href="TSNE2.html">GIST</a></li>
-                                    <li><a  href="TSNE2FISHER.html">Fisher</a></li>
+                                    <li><a  href="TSNE2.html">GIST</a></li>
+                                    <li class="active"><a  href="TSNE2FISHER.html">Fisher</a></li>
                                 </ul>
                             </li>
+
                       </ul>
                   </li>
                   <li class="sub-menu">
@@ -234,7 +235,7 @@
       
     var g = svg.append("g")// for our zoom
     
-    d3.json("consolidated_data_jsonformatted_originalSI.ndjson", function(err, drawings) {
+    d3.json("consolidated_data_jsonformatted_originalFISHER.ndjson", function(err, drawings) {
     // check the console to see the data format!
     //console.log(drawings);
 
