@@ -20,37 +20,37 @@ config.experiment_id = 'urbanperception';
 %%config.urban_data_file_type = 'json';
 
 % Configure experiment datasource for 2011 images.
-%config.mhomedir = '/mnt/raid/data/vicente/urban_release/';
-config.homedir = '/mnt/raid/data/karelia/urbanperception/';
-%config.datasource = 'placepulse_2011';
-config.datasource = 'arequipa_experimento';
-%config.image_url = ['http://localhost:8000/raid/data/vicente/urban_release/data/images/'];
-config.image_url = ['http://localhost:8000/raid/data/karelia/urbanperception/data/images_arequipa/'];
-%config.image_path = [config.homedir '/data/images'];
-config.image_path = [config.homedir '/data/images_arequipa'];
-%config.urban_data_file = [config.homedir '/data/consolidated_data_jsonformatted.json'];
+config.homedir = '/mnt/raid/data/vicente/urban_release/';
+%config.homedir = '/mnt/raid/data/karelia/urbanperception/';
+config.datasource = 'placepulse_2011';
+%config.datasource = 'arequipa_experimento';
+config.image_url = ['http://localhost:8000/raid/data/vicente/urban_release/data/images/'];
+%config.image_url = ['http://localhost:8000/raid/data/karelia/urbanperception/data/images_arequipa/'];
+config.image_path = [config.homedir '/data/images'];
+%config.image_path = [config.homedir '/data/images_arequipa'];
 config.urban_data_file = [config.homedir '/data/consolidated_data_jsonformatted.json'];
+%config.urban_data_file = [config.homedir '/data/consolidated_data_jsonformatted.json'];
 %config.urban_data_file = ['/mnt/raid/data/vicente/urban_release/data/consolidated_data_jsonformatted.json'];
 
 config.urban_data_file_type = 'json';
 
 % Configure feature type.
-%config.feature_type = 'decaf';
+config.feature_type = 'decaf';
 %config.feature_type = 'fisher';
-config.feature_type = 'gist';
+%config.feature_type = 'gist';
 
 % Gist features configuration.
 config.gist_features_path = [config.homedir '/output/' config.datasource '/gist_features.mat'];
 
 % Decaf features configuration.
-%config.decaf_layer = 'fc6_cudanet_out';
-%config.decaf_features_path = [config.homedir '/output/' config.datasource '/decaf_features_' config.decaf_layer '.mat'];
+config.decaf_layer = 'fc6_cudanet_out';
+config.decaf_features_path = [config.homedir '/output/' config.datasource '/decaf_features_' config.decaf_layer '.mat'];
 
 % Sift features with Fisher Vectors settings.
-%config.kCodebookSizeGmm = 128;%Diccionario visual con 128 componentes usando Gaussian Mixture Models. 
-%config.gmm_dictionary_path = [config.homedir '/output/' config.datasource '/gmm_dictionary.mat'];
-%config.pyramid = {[1 1], [2 2]};
-%config.fisher_features_path = [config.homedir '/output/' config.datasource '/fisher_features.mat'];
+config.kCodebookSizeGmm = 128;%Diccionario visual con 128 componentes usando Gaussian Mixture Models. 
+config.gmm_dictionary_path = [config.homedir '/output/' config.datasource '/gmm_dictionary.mat'];
+config.pyramid = {[1 1], [2 2]};
+config.fisher_features_path = [config.homedir '/output/' config.datasource '/fisher_features.mat'];
 
 % Configure Learning parameters for Linear SVMs.
 config.splits_path = [config.homedir '/output/split_info/binary'];
@@ -78,33 +78,33 @@ if strcmp(config.datasource, 'placepulse_2013')
 end
 
 % Plot data for the two cities.
-for city_id = 1 : length(cities)
-    city = cities{city_id};
-    fprintf('%d. Plotting data for city: %s\n', city_id, city);
-    urban.plotData(city, 'safer', [config.output_path '/view_data'], config.image_url); %/mnt/raid/data/vicente/urban_release/output/placepulse_2011/view_data
-    urban.plotData(city, 'unique', [config.output_path '/view_data'], config.image_url);
-    urban.plotData(city, 'upperclass', [config.output_path '/view_data'], config.image_url);
-end
+%for city_id = 1 : length(cities)
+%    city = cities{city_id};
+%    fprintf('%d. Plotting data for city: %s\n', city_id, city);
+%    urban.plotData(city, 'safer', [config.output_path '/view_data'], config.image_url); %/mnt/raid/data/vicente/urban_release/output/placepulse_2011/view_data
+%    urban.plotData(city, 'unique', [config.output_path '/view_data'], config.image_url);
+%    urban.plotData(city, 'upperclass', [config.output_path '/view_data'], config.image_url);
+%zend
 
 disp("HOLA");
 % Compute or load features.
-%compute_features_streets;
+compute_features_streets;
 disp("HOLA2");
 
 %%
 % Now run experiments.
 
 metric_set = {'safer', 'unique', 'upperclass'};
-%cities_harder = cities(end:-1:1);
-cities_harder = {'Arequipa'};
+cities_harder = cities(end:-1:1);
+%cities_harder = {'Arequipa'};
 for metric_ind = 1 : length(metric_set) % clasificacion para seguridad, singularidad y clase
 % Now run classification.
 metric_str = metric_set{metric_ind}; % si le toca seguridad, singularidad o clase 
 disp(cities);
 for city_ind = 1 : length(cities) % para todas las ciudades
     city_string = cities{city_ind};
-    %city_string_harder = cities_harder{city_ind};
-    city_string_harder = 'Arequipa';
+    city_string_harder = cities_harder{city_ind};
+    %city_string_harder = 'Arequipa';
     city_identifier = regexprep(lower(city_string), ' ', '_');
     ensuredir(sprintf('%s/%s_%s/%s', config.results_path, ...
                       config.experiment_id, city_identifier, metric_str));%cities_harder
@@ -118,12 +118,8 @@ for city_ind = 1 : length(cities) % para todas las ciudades
         dataset = urban.getBinaryData(city_string, metric_str, delta);
         [xx, inds] = ismember(dataset.images, urban.data.image_names);
         disp(inds);
-        features_set = feature_matrix(1, :);
-        %        features_set = feature_matrix(inds, :);
-        disp(features_set);
-        disp(city_string_harder);
-        disp(metric_str);
-        disp(delta);
+        %features_set = feature_matrix(1, :);
+        features_set = feature_matrix(inds, :);
         dataset_harder = urban.getBinaryData(city_string_harder, metric_str, delta);
         [xx, inds_harder] = ismember(dataset_harder.images, urban.data.image_names);
         %        features_set_harder = feature_matrix(inds_harder, :);

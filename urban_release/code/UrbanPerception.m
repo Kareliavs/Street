@@ -172,8 +172,8 @@ classdef UrbanPerception
                 urban.ids = cellfun(@(x){x(length('"ID": "') + 1: end - 1)}, urban.ids);
                 
                 urban.image_names = regexp(str, '"File_Location": "[^"]*"', 'match');
-                urban.image_names = cellfun(@(x){x(length('"File_location": "') + 18: end - 1)}, urban.image_names);
-                %urban.image_names = cellfun(@(x){sprintf('id_%s_640_420.jpg', x)}, urban.ids);
+                %urban.image_names = cellfun(@(x){x(length('"File_location": "') + 18: end - 1)}, urban.image_names);
+                urban.image_names = cellfun(@(x){sprintf('id_%s_640_420.jpg', x)}, urban.ids);
             else
                 % This is a csv file.
                 f = fopen(data_file);

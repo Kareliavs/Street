@@ -23,8 +23,10 @@ if ~ispc
     cd(folder);
     unix(['python runDecaf.py']);
     cd(this_folder);
+        disp("AQUOOO");
 else
     dos(['C:\cygwin64\bin\bash.exe -c "cd ' [this_folder '/' folder] ';/usr/bin/python runDecaf.py"'])
+    disp("AQUIIII");
 end
 
 output = load([folder '/tmp_decaf_output.mat']);

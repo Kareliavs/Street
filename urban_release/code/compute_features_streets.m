@@ -1,18 +1,18 @@
 
 if strcmp(config.feature_type, 'decaf')
-    if ~exist(config.decaf_features_path, 'file')
+   % if ~exist(config.decaf_features_path, 'file')
         image_list = cellfun(@(x){sprintf('%s/%s', config.image_path, x)}, urban.data.image_names);
-        compute_decaf_features(config.image_path, data.images, config.decaf_features_path);
-    else
-        decaf_features = load(config.decaf_features_path);
-        thefeatures = squeeze(decaf_features.decaf_features.features);
-        image_list = decaf_features.image_list;
-        feature_matrix = double(thefeatures);
-        for i = 1 : length(image_list)
-            [aa, bb, cc] = fileparts(image_list{i});
-            assert(strcmp([bb cc], urban.data.image_names{i}));
-        end
-    end
+        compute_decaf_features(config.image_path,image_list , config.decaf_features_path);
+    %else
+       % decaf_features = load(config.decaf_features_path);
+        %thefeatures = squeeze(decaf_features.decaf_features.features);
+        %image_list = decaf_features.image_list;
+        %feature_matrix = double(thefeatures);
+        %for i = 1 : length(image_list)
+           % [aa, bb, cc] = fileparts(image_list{i});
+            %assert(strcmp([bb cc], urban.data.image_names{i}));
+        %end
+   % end
    %urban = decaf_features.urban;
 elseif strcmp(config.feature_type, 'gist')
     disp("S");
